@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON</title>
+</head>
+<body>
+    <h1>Javascript Object Notation</h1>
+
+    <input type="text" placeholder="type title" id="title">
+    <br>
+    <input type="text" placeholder="type another title" id="title2">
+    <br>
+    <button type="submit" id="submit">Submit</button>
+    <ul id="user-container">
+
+    </ul>
+
+    <script>
+        const user = {
+            name : "Protik",
+            age : 23,
+            occupation : "student",
+            friendsName : ["Limon", "Ratul"],
+            gfName : {
+                name : "doesn't exist",
+                age : 000
+            }
+        };
+
+        const userJSON = JSON.stringify(user);
+        console.log(userJSON);
+
+        const userParsed = JSON.parse(userJSON);
+        console.log(userParsed);
+
+        //json data load
+
+        fetch('https://jsonplaceholder.typicode.com/users')
+        .then(response => response.json())
+        .then(json => displayUsers(json))
+        // .catch(error=> console.log(error))
+
+        //json data send to the server
+
+        document.getElementById('submit').addEventListener('click', function(){
+            const title1 = document.getElementById('title').value;
+            const title2 = document.getElementById('title2').value;
+            const post = {FirstTitleName : title1, SecondTitleName :title2};
+            sendToServer(post);
+        })
+
+        function sendToServer(userSend){
+            fetch('https://jsonplaceholder.typicode.com/posts', {
+            method: 'POST',
+            body: JSON.stringify(userSend),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+            }
+            })
+            .then((response) => response.json())
+            .then((data) => console.log(data))
+        }
+
+
+        function displayUsers(users){
+            const userName = users.map(user => user.username);
+            const ul = document.getElementById('user-container');
+            
+            for(let i = 0; i<userName.length; i++){
+                const usersName = userName[i];
+                const li = document.createElement('li');
+                li.innerText = usersName;
+                ul.appendChild(li);
+            }
+        }
+    </script>
+</body>
+</html>
